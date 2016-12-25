@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "github-markdown-css": "~2.4.1",
+    "js-yaml": "~3.7.0",
     "markdown": "~0.5.0",
     "superagent": "~3.3.1"
   },
