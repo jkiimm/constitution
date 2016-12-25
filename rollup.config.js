@@ -5,6 +5,7 @@ import svelte from 'rollup-plugin-svelte';
 import commonjs from 'rollup-plugin-commonjs';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import css from 'rollup-plugin-css-only';
 
 export default {
   entry: 'src/scripts/main.js',
@@ -13,6 +14,7 @@ export default {
   sourceMap: 'inline',
   context: 'window',
   plugins: [
+    css({ output: 'build/assets/css/style.css' }),
     babel({ include: 'src/scripts/**/*.js', exclude: 'node_modules/**' }),
     svelte({ include: 'src/components/**/*.html' }),
     globals(),
