@@ -11,7 +11,7 @@ export default {
   entry: 'src/scripts/main.js',
   dest: 'build/assets/js/main.js',
   format: 'iife',
-  sourceMap: 'inline',
+  sourceMap: false,
   context: 'window',
   plugins: [
     css({ output: 'build/assets/css/style.css' }),
