@@ -10437,7 +10437,7 @@ client.get('assets/data/01-meta.yaml').then(function (res) {
 let addedCss$1 = false;
 function addCss$1 () {
 	var style = createElement( 'style' );
-	style.textContent = "\n  .footer[svelte-3320602493], [svelte-3320602493] .footer {\n    border-top: 1px solid #eeeeee;\n    padding: 30px 0;\n    text-align: center;\n  }\n";
+	style.textContent = "\n  .footer[svelte-3590002592], [svelte-3590002592] .footer {\n    border-top: 1px solid #eeeeee;\n    padding: 30px 0;\n    text-align: center;\n    color: #777777;\n  }\n\n  .footer  a[svelte-3590002592], .footer  [svelte-3590002592] a, .footer[svelte-3590002592]  a, [svelte-3590002592] .footer  a {\n    text-decoration: inherit;\n    color: inherit;\n    cursor: auto;\n  }\n\n  .footer  a[svelte-3590002592]:hover, .footer  [svelte-3590002592] a:hover, .footer[svelte-3590002592]  a:hover, [svelte-3590002592] .footer  a:hover {\n    color: #333333;\n  }\n";
 	appendNode( style, document.head );
 
 	addedCss$1 = true;
@@ -10445,11 +10445,11 @@ function addCss$1 () {
 
 function renderMainFragment$1 ( root, component ) {
 	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-3320602493', '' );
+	div.setAttribute( 'svelte-3590002592', '' );
 	div.className = "footer";
 	
 	var a = createElement( 'a' );
-	a.setAttribute( 'svelte-3320602493', '' );
+	a.setAttribute( 'svelte-3590002592', '' );
 	a.href = "mailto:jkiimm9@gmail.com";
 	
 	appendNode( a, div );
@@ -10457,7 +10457,7 @@ function renderMainFragment$1 ( root, component ) {
 	appendNode( createText( " | " ), div );
 	
 	var a1 = createElement( 'a' );
-	a1.setAttribute( 'svelte-3320602493', '' );
+	a1.setAttribute( 'svelte-3590002592', '' );
 	a1.href = "https://github.com/jkiimm/constitution";
 	
 	appendNode( a1, div );
@@ -10620,7 +10620,7 @@ client.get('assets/data/01-preamble.md').then(function (res) {
 function renderMainFragment$3 ( root, component ) {
 	var h2 = createElement( 'h2' );
 	
-	appendNode( createText( "본문" ), h2 );
+	appendNode( createText( "전문" ), h2 );
 	var text1 = createText( "\n" );
 	
 	var div = createElement( 'div' );
