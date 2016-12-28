@@ -10620,7 +10620,7 @@ client.get('assets/data/01-preamble.md').then(function (res) {
 function renderMainFragment$3 ( root, component ) {
 	var h2 = createElement( 'h2' );
 	
-	appendNode( createText( "전문" ), h2 );
+	appendNode( createText( "조문" ), h2 );
 	var text1 = createText( "\n" );
 	
 	var div = createElement( 'div' );
