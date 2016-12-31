@@ -6,7 +6,7 @@ const comp = new Preamble({
   target: document.querySelector('.body__preamble')
 });
 
-request.get('assets/data/01-preamble.md')
+request.get('assets/data/01/preamble.md')
   .then((res) => {
     comp.set({ content: markdown.toHTML(res.text) });
   });
