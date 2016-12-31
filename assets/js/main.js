@@ -93,7 +93,7 @@ function dispatchObservers ( component, group, newState, oldState ) {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n  .body__group[svelte-3328937647], [svelte-3328937647] .body__group {\n    font-family: 'Nanum Myeongjo';\n    padding: 50px 20px;\n    max-width: 960px;\n    margin: 0 auto;\n  }\n";
+	style.textContent = "\n  .body__group[svelte-2771637815], [svelte-2771637815] .body__group {\n    font-family: 'Nanum Myeongjo';\n    padding: 50px 20px;\n    max-width: 960px;\n    margin: 0 auto;\n  }\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -101,18 +101,18 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-3328937647', '' );
+	div.setAttribute( 'svelte-2771637815', '' );
 	div.className = "body__group markdown-body";
 	
 	var h1 = createElement( 'h1' );
-	h1.setAttribute( 'svelte-3328937647', '' );
+	h1.setAttribute( 'svelte-2771637815', '' );
 	
 	appendNode( h1, div );
 	appendNode( createText( "대한민국 헌법" ), h1 );
 	appendNode( createText( "\n  " ), div );
 	
 	var div1 = createElement( 'div' );
-	div1.setAttribute( 'svelte-3328937647', '' );
+	div1.setAttribute( 'svelte-2771637815', '' );
 	
 	appendNode( div1, div );
 	var raw_before = createElement( 'noscript' );
@@ -123,21 +123,21 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n  " ), div );
 	
 	var div2 = createElement( 'div' );
-	div2.setAttribute( 'svelte-3328937647', '' );
+	div2.setAttribute( 'svelte-2771637815', '' );
 	div2.className = "body__preamble";
 	
 	appendNode( div2, div );
 	appendNode( createText( "\n  " ), div );
 	
 	var div3 = createElement( 'div' );
-	div3.setAttribute( 'svelte-3328937647', '' );
-	div3.className = "body__constitution";
+	div3.setAttribute( 'svelte-2771637815', '' );
+	div3.className = "body__provision";
 	
 	appendNode( div3, div );
 	appendNode( createText( "\n  " ), div );
 	
 	var div4 = createElement( 'div' );
-	div4.setAttribute( 'svelte-3328937647', '' );
+	div4.setAttribute( 'svelte-2771637815', '' );
 	div4.className = "body__addenda";
 	
 	appendNode( div4, div );
@@ -10429,7 +10429,7 @@ var comp = new Body({
   target: document.querySelector('main')
 });
 
-client.get('assets/data/01-meta.yaml').then(function (res) {
+client.get('assets/data/10/meta.yaml').then(function (res) {
   var obj = index$4.load(res.text);
   comp.set({ meta: markdown.toHTML(obj.general) });
 });
@@ -10613,7 +10613,7 @@ var comp$4 = new Preamble({
   target: document.querySelector('.body__preamble')
 });
 
-client.get('assets/data/01-preamble.md').then(function (res) {
+client.get('assets/data/10/preamble.md').then(function (res) {
   comp$4.set({ content: markdown.toHTML(res.text) });
 });
 
@@ -10660,7 +10660,7 @@ function renderMainFragment$3 ( root, component ) {
 	};
 }
 
-function Constitution ( options ) {
+function Provision ( options ) {
 	options = options || {};
 	
 	this._state = options.data || {};
@@ -10679,12 +10679,12 @@ function Constitution ( options ) {
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
-Constitution.prototype.get = get;
-Constitution.prototype.fire = fire;
-Constitution.prototype.observe = observe;
-Constitution.prototype.on = on;
+Provision.prototype.get = get;
+Provision.prototype.fire = fire;
+Provision.prototype.observe = observe;
+Provision.prototype.on = on;
 
-Constitution.prototype.set = function set ( newState ) {
+Provision.prototype.set = function set ( newState ) {
 	var oldState = this._state;
 	this._state = Object.assign( {}, oldState, newState );
 	
@@ -10693,7 +10693,7 @@ Constitution.prototype.set = function set ( newState ) {
 	dispatchObservers( this, this._observers.post, newState, oldState );
 };
 
-Constitution.prototype.teardown = function teardown ( detach ) {
+Provision.prototype.teardown = function teardown ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -10702,11 +10702,11 @@ Constitution.prototype.teardown = function teardown ( detach ) {
 	this._state = {};
 };
 
-var comp$6 = new Constitution({
-  target: document.querySelector('.body__constitution')
+var comp$6 = new Provision({
+  target: document.querySelector('.body__provision')
 });
 
-client.get('assets/data/01-the-constitution.md').then(function (res) {
+client.get('assets/data/10/provision.md').then(function (res) {
   comp$6.set({ content: markdown.toHTML(res.text) });
 });
 
@@ -10822,11 +10822,11 @@ var comp$8 = new Addenda({
   target: document.querySelector('.body__addenda')
 });
 
-client.get('assets/data/01-addenda.md').then(function (res) {
+client.get('assets/data/10/addenda.md').then(function (res) {
   comp$8.set({ content: markdown.toHTML(res.text) });
 });
 
-client.get('assets/data/01-meta.yaml').then(function (res) {
+client.get('assets/data/10/meta.yaml').then(function (res) {
   var obj = index$4.load(res.text);
   comp$8.set({ meta: markdown.toHTML(obj.addenda) });
 });
