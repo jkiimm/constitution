@@ -7,7 +7,7 @@ const comp = new Body({
   target: document.querySelector('main')
 });
 
-request.get('assets/data/01/meta.yaml')
+request.get('assets/data/10/meta.yaml')
   .then((res) => {
     const obj = yaml.load(res.text);
     comp.set({ meta: markdown.toHTML(obj.general) });
