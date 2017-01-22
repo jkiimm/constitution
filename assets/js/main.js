@@ -665,7 +665,7 @@ var template$1 = (function () {
 let addedCss$2 = false;
 function addCss$2 () {
 	var style = createElement( 'style' );
-	style.textContent = "\n  .sidenav[svelte-2192214352], [svelte-2192214352] .sidenav {\n    position: fixed;\n    float: left;\n    border-right: 1px solid #cccccc;\n    color: #333333;\n    width: 200px;\n    height: 100%;\n    overflow: auto;\n    transform: translate(-100%, 0);\n    background: #ffffff;\n  }\n\n  @media (min-width: 600px) {\n    .sidenav[svelte-2192214352], [svelte-2192214352] .sidenav {\n      transform: translate(0, 0);\n    }\n  }\n\n  .sidenav__logo[svelte-2192214352], [svelte-2192214352] .sidenav__logo {\n    text-align: center;\n    padding: 30px 0;\n  }\n\n  img[svelte-2192214352], [svelte-2192214352] img {\n    width: 100px;\n    height: 100px;\n  }\n\n  ol[svelte-2192214352], [svelte-2192214352] ol {\n    margin: 0;\n    padding: 0;\n    font-size: 18px;\n    list-style-type: none;\n    text-align: center;\n  }\n\n  .sidenav__sub[svelte-2192214352], [svelte-2192214352] .sidenav__sub {\n    margin: 0;\n    padding: 10px 0 10px 18px;\n    font-size: 20px;\n    background: #666666;\n    color: #ffffff;\n  }\n\n  a[svelte-2192214352], [svelte-2192214352] a {\n    display: block;\n    padding: 10px 30px;\n    color: inherit;\n    text-decoration: none;\n  }\n\n  li[svelte-2192214352], [svelte-2192214352] li {\n  }\n\n  li[svelte-2192214352]:hover, [svelte-2192214352] li:hover, .selected[svelte-2192214352], [svelte-2192214352] .selected {\n    background: #e4e4e4;\n  }\n";
+	style.textContent = "\n  .sidenav[svelte-1972918911], [svelte-1972918911] .sidenav {\n    position: fixed;\n    float: left;\n    border-right: 1px solid #cccccc;\n    color: #333333;\n    width: 200px;\n    height: 100%;\n    overflow: auto;\n    transform: translate(-100%, 0);\n    background: #ffffff;\n  }\n\n  @media (min-width: 600px) {\n    .sidenav[svelte-1972918911], [svelte-1972918911] .sidenav {\n      transform: translate(0, 0);\n    }\n  }\n\n  .sidenav__logo[svelte-1972918911], [svelte-1972918911] .sidenav__logo {\n    text-align: center;\n    padding: 30px 0;\n  }\n\n  img[svelte-1972918911], [svelte-1972918911] img {\n    width: 100px;\n    height: 100px;\n  }\n\n  ol[svelte-1972918911], [svelte-1972918911] ol {\n    margin: 0;\n    padding: 0;\n    font-size: 18px;\n    list-style-type: none;\n    text-align: center;\n  }\n\n  .sidenav__sub[svelte-1972918911], [svelte-1972918911] .sidenav__sub {\n    margin: 0;\n    padding: 10px 0 10px 18px;\n    font-size: 20px;\n    background: #666666;\n    color: #ffffff;\n  }\n\n  a[svelte-1972918911], [svelte-1972918911] a {\n    display: block;\n    padding: 10px 30px;\n    color: inherit;\n    text-decoration: none;\n  }\n\n  li[svelte-1972918911], [svelte-1972918911] li {\n  }\n\n  li[svelte-1972918911]:hover, [svelte-1972918911] li:hover, .selected[svelte-1972918911], [svelte-1972918911] .selected {\n    background: #e4e4e4;\n  }\n";
 	appendNode( style, document.head );
 
 	addedCss$2 = true;
@@ -673,30 +673,30 @@ function addCss$2 () {
 
 function renderMainFragment$5 ( root, component ) {
 	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-2192214352', '' );
+	div.setAttribute( 'svelte-1972918911', '' );
 	div.className = "sidenav";
 	
 	var div1 = createElement( 'div' );
-	div1.setAttribute( 'svelte-2192214352', '' );
+	div1.setAttribute( 'svelte-1972918911', '' );
 	div1.className = "sidenav__logo";
 	
 	appendNode( div1, div );
 	
 	var img = createElement( 'img' );
-	img.setAttribute( 'svelte-2192214352', '' );
-	img.src = "/assets/images/emblem.svg";
+	img.setAttribute( 'svelte-1972918911', '' );
+	img.src = "assets/images/emblem.svg";
 	img.alt = "헌법제판소 엠블럼";
 	
 	appendNode( img, div1 );
 	appendNode( createText( "\n  " ), div );
 	
 	var div2 = createElement( 'div' );
-	div2.setAttribute( 'svelte-2192214352', '' );
+	div2.setAttribute( 'svelte-1972918911', '' );
 	
 	appendNode( div2, div );
 	
 	var h2 = createElement( 'h2' );
-	h2.setAttribute( 'svelte-2192214352', '' );
+	h2.setAttribute( 'svelte-1972918911', '' );
 	h2.className = "sidenav__sub";
 	
 	appendNode( h2, div2 );
@@ -704,7 +704,7 @@ function renderMainFragment$5 ( root, component ) {
 	appendNode( createText( "\n    " ), div2 );
 	
 	var ol = createElement( 'ol' );
-	ol.setAttribute( 'svelte-2192214352', '' );
+	ol.setAttribute( 'svelte-1972918911', '' );
 	
 	appendNode( ol, div2 );
 	var eachBlock_anchor = createComment( "#each versions" );
@@ -755,11 +755,11 @@ function renderMainFragment$5 ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, version, version__index, component ) {
 	var li = createElement( 'li' );
-	li.setAttribute( 'svelte-2192214352', '' );
+	li.setAttribute( 'svelte-1972918911', '' );
 	li.className = version.selected ? 'selected': '';
 	
 	var a = createElement( 'a' );
-	a.setAttribute( 'svelte-2192214352', '' );
+	a.setAttribute( 'svelte-1972918911', '' );
 	a.href = "#/articles/" + ( version.num );
 	
 	function clickHandler ( event ) {
