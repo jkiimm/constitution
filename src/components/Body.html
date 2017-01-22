@@ -1,9 +1,11 @@
-<div class="body__group markdown-body">
-  <h1>대한민국 헌법</h1>
-  <div>{{{ meta }}}</div>
-  <Preamble content="{{ preamble }}"></Preamble>
-  <Provision content="{{ provision }}"></Provision>
-  <Addenda content="{{ addenda }}"></Addenda>
+<div class="body markdown-body">
+  <div class="body__align">
+    <h1>대한민국 헌법</h1>
+    <div>{{{ meta }}}</div>
+    <Preamble content="{{ preamble }}"></Preamble>
+    <Provision content="{{ provision }}"></Provision>
+    <Addenda content="{{ addenda }}"></Addenda>
+  </div>
 </div>
 
 <script>
@@ -17,10 +19,19 @@
 </script>
 
 <style>
-  .body__group {
+  .body {
     font-family: 'Nanum Myeongjo';
     padding: 50px 20px;
+  }
+
+  .body__align {
     max-width: 960px;
     margin: 0 auto;
+  }
+
+  @media (min-width: 600px) {
+    .body {
+      margin-left: 200px;
+    }
   }
 </style>

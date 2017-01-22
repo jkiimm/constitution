@@ -8,7 +8,7 @@ import globals from 'rollup-plugin-node-globals';
 import css from 'rollup-plugin-css-only';
 
 export default {
-  entry: 'src/scripts/main.js',
+  entry: 'src/main.js',
   dest: 'build/assets/js/main.js',
   format: 'iife',
   sourceMap: false,
