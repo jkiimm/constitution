@@ -1,0 +1,67 @@
+<div class="toolbar">
+  <div class="toolbar__inner">
+    <div class="toolbar__content">
+      <i class="icon" on:click="openSidenav()">☰</i><h1>{{ heading }}</h1>
+    </div>
+  </div>
+</div>
+
+<script>
+  import sidenav from '../scripts/Sidenav';
+  import dimmer from '../scripts/Dimmer';
+
+  export default {
+    methods: {
+      openSidenav() {
+        sidenav.set({ className: 'sidenav sidenav--opened' });
+        dimmer.set({ className: 'screen screen--active' });
+      }
+    }
+  };
+</script>
+
+<style>
+  .icon, h1 {
+    vertical-align: middle;
+  }
+
+  .icon {
+    font-style: normal;
+    display: inline-block;
+    padding: 8px;
+    cursor: pointer;
+    transform: scale(1.2, 1);
+  }
+
+  .toolbar {
+    display: table;
+    position: fixed;
+    width: 100%;
+    height: 45px;
+    background: #f6f6f6;
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 0px 2px 2px rgba(0, 0, 0, 0.098), 0px 0px 5px 1px rgba(0, 0, 0, 0.084);
+    color: #333333;
+  }
+
+  .toolbar__inner {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .toolbar__content {
+    margin: 0 5px;
+  }
+
+  h1 {
+    display: inline-block;
+    font-size: 18px;
+    margin: 0 0 0 3px;
+    line-height: 45px;
+  }
+
+  @media (min-width: 600px) {
+    .toolbar {
+      display: none;
+    }
+  }
+</style>

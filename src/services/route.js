@@ -2,39 +2,43 @@ import Navigo from 'navigo';
 import request from 'superagent';
 import { markdown } from 'markdown';
 import yaml from 'js-yaml';
-import app from '../scripts/Body';
+import body from '../scripts/Body';
+import toolbar from '../scripts/Toolbar';
 
 const router = new Navigo(null, true);
 
 router.on('/articles/:ver', (params) => {
-  setContent(`0${params.ver}`.slice(-2));
+  setContent(params.ver);
 })
 .resolve();
 
 export default router;
 
 function setContent(ver) {
+  const verStr = `0${ver}`.slice(-2);
   let meta = {};
 
-  request.get(`assets/data/${ver}/preamble.md`)
+  toolbar.set({ heading: `헌법 제${ver}호` });
+
+  request.get(`assets/data/${verStr}/preamble.md`)
     .then((res) => {
-      app.set({ preamble: markdown.toHTML(res.text) });
+      body.set({ preamble: markdown.toHTML(res.text) });
     });
 
-  request.get(`assets/data/${ver}/provision.md`)
+  request.get(`assets/data/${verStr}/provision.md`)
     .then((res) => {
-      app.set({ provision: markdown.toHTML(res.text) });
+      body.set({ provision: markdown.toHTML(res.text) });
     });
 
-  request.get(`assets/data/${ver}/meta.yaml`)
+  request.get(`assets/data/${verStr}/meta.yaml`)
     .then((res) => {
       meta = yaml.load(res.text);
-      app.set({ meta: markdown.toHTML(meta.general) });
+      body.set({ meta: markdown.toHTML(meta.general) });
 
-      return request.get(`assets/data/${ver}/addenda.md`);
+      return request.get(`assets/data/${verStr}/addenda.md`);
     })
     .then((res) => {
-      app.set({
+      body.set({
         addenda: {
           body: markdown.toHTML(res.text),
           meta: markdown.toHTML(meta.addenda)

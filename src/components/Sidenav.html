@@ -1,4 +1,4 @@
-<div class="sidenav">
+<div class="{{ className }}">
   <div class="sidenav__logo">
     <img src="assets/images/emblem.svg" alt="헌법제판소 엠블럼">
   </div>
@@ -17,6 +17,8 @@
 </div>
 
 <script>
+  import dimmer from '../scripts/Dimmer';
+
   export default {
     methods: {
       selectArticle(num) {
@@ -26,7 +28,8 @@
             return ver;
           });
 
-        this.set({ versions });
+        this.set({ versions, className: 'sidenav' });
+        dimmer.set({ className: 'screen' });
       }
     }
   };
@@ -43,6 +46,13 @@
     overflow: auto;
     transform: translate(-100%, 0);
     background: #ffffff;
+    transition: transform 0.4s;
+    will-change: transform;
+    z-index: 10;
+  }
+
+  .sidenav--opened {
+    transform: translate(0, 0);
   }
 
   @media (min-width: 600px) {
