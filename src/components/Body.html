@@ -1,10 +1,16 @@
 <div class="body markdown-body">
-  <div class="body__align">
-    <h1>대한민국 헌법</h1>
-    <div>{{{ meta }}}</div>
-    <Preamble content="{{ preamble }}"></Preamble>
-    <Provision content="{{ provision }}"></Provision>
-    <Addenda content="{{ addenda }}"></Addenda>
+  <div class="{{ innerClass }}">
+    <div class="spinner">
+      <img class="spinner__img" src="assets/images/loading.svg" alt="내용 불러오는 중">
+    </div>
+
+    <div class="body__align">
+      <h1>대한민국 헌법</h1>
+      <div>{{{ meta }}}</div>
+      <Preamble content="{{ preamble }}"></Preamble>
+      <Provision content="{{ provision }}"></Provision>
+      <Addenda content="{{ addenda }}"></Addenda>
+    </div>
   </div>
 </div>
 
@@ -26,6 +32,21 @@
 
   .body__align {
     max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .body__inner--loading .spinner {
+    display: block;
+    text-align: center;
+    margin: 200px 0;
+  }
+
+  .body__inner--loading .body__align {
+    display: none;
+  }
+
+  .spinner {
+    display: none;
     margin: 0 auto;
   }
 

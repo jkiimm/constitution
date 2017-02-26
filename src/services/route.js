@@ -17,33 +17,33 @@ export default router;
 function setContent(ver) {
   const verStr = `0${ver}`.slice(-2);
   let meta = {};
+  let content = {};
 
   toolbar.set({ heading: `헌법 제${ver}호` });
+  body.set({ innerClass: 'body__inner body__inner--loading' });
 
-  request.get(`assets/data/${verStr}/preamble.md`)
-    .then((res) => {
-      body.set({ preamble: markdown.toHTML(res.text) });
-    });
+  Promise.all([
+    request.get(`assets/data/${verStr}/preamble.md`),
+    request.get(`assets/data/${verStr}/provision.md`),
+    request.get(`assets/data/${verStr}/meta.yaml`),
+  ])
+    .then((ress) => {
+      content.preamble = markdown.toHTML(ress[0].text);
+      content.provision = markdown.toHTML(ress[1].text);
 
-  request.get(`assets/data/${verStr}/provision.md`)
-    .then((res) => {
-      body.set({ provision: markdown.toHTML(res.text) });
-    });
-
-  request.get(`assets/data/${verStr}/meta.yaml`)
-    .then((res) => {
-      meta = yaml.load(res.text);
-      body.set({ meta: markdown.toHTML(meta.general) });
+      meta = yaml.load(ress[2].text);
+      content.meta = markdown.toHTML(meta.general);
 
       return request.get(`assets/data/${verStr}/addenda.md`);
     })
     .then((res) => {
-      body.set({
-        addenda: {
-          body: markdown.toHTML(res.text),
-          meta: markdown.toHTML(meta.addenda)
-        }
-      });
+      content.addenda = {
+        body: markdown.toHTML(res.text),
+        meta: markdown.toHTML(meta.addenda)
+      };
+      content.innerClass = 'body__inner';
+
+      body.set(content);
     });
 }
 
