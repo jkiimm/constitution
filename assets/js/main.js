@@ -94,135 +94,59 @@ function dispatchObservers ( component, group, newState, oldState ) {
 	}
 }
 
-function renderMainFragment$1 ( root, component ) {
-	var h2 = createElement( 'h2' );
-	
-	appendNode( createText( "전문" ), h2 );
-	var text1 = createText( "\n" );
-	
-	var div = createElement( 'div' );
-	
-	var raw_before = createElement( 'noscript' );
-	appendNode( raw_before, div );
-	var raw_after = createElement( 'noscript' );
-	appendNode( raw_after, div );
-	raw_before.insertAdjacentHTML( 'afterend', root.content );
+var template$2 = (function () {
+  return {
+    methods: {
+      close() {
+        comp$1.set({ className: 'sidenav' });
+        this.set({ className: 'screen' });
+      }
+    }
+  };
 
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( h2, target, anchor );
-			insertNode( text1, target, anchor );
-			insertNode( div, target, anchor );
-		},
-		
-		update: function ( changed, root ) {
-			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-				raw_before.parentNode.removeChild( raw_before.nextSibling );
-			}
-			
-			raw_before.insertAdjacentHTML( 'afterend', root.content );
-		},
-		
-		teardown: function ( detach ) {
-			if ( detach ) {
-				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-					raw_before.parentNode.removeChild( raw_before.nextSibling );
-				}
-				
-				detachNode( h2 );
-				detachNode( text1 );
-				detachNode( div );
-			}
-		},
-	};
+}());
+
+let addedCss$2 = false;
+function addCss$2 () {
+	var style = createElement( 'style' );
+	style.textContent = "\n  .screen[svelte-301448036], [svelte-301448036] .screen {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 0;\n    height: 0;\n    background: rgba(0, 0, 0, 0.4);\n    opacity: 0;\n    transition: opacity 0.4s;\n    will-change: opacity;\n  }\n\n  .screen--active[svelte-301448036], [svelte-301448036] .screen--active {\n    width: 100%;\n    height: 100%;\n    opacity: 1;\n  }\n";
+	appendNode( style, document.head );
+
+	addedCss$2 = true;
 }
-
-function Preamble ( options ) {
-	options = options || {};
-	
-	this._state = options.data || {};
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._fragment = renderMainFragment$1( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-}
-
-Preamble.prototype.get = get;
-Preamble.prototype.fire = fire;
-Preamble.prototype.observe = observe;
-Preamble.prototype.on = on;
-
-Preamble.prototype.set = function set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-};
-
-Preamble.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-};
 
 function renderMainFragment$2 ( root, component ) {
-	var h2 = createElement( 'h2' );
-	
-	appendNode( createText( "조문" ), h2 );
-	var text1 = createText( "\n" );
-	
 	var div = createElement( 'div' );
+	div.setAttribute( 'svelte-301448036', '' );
 	
-	var raw_before = createElement( 'noscript' );
-	appendNode( raw_before, div );
-	var raw_after = createElement( 'noscript' );
-	appendNode( raw_after, div );
-	raw_before.insertAdjacentHTML( 'afterend', root.content );
+	function clickHandler ( event ) {
+		component.close();
+	}
+	
+	div.addEventListener( 'click', clickHandler, false );
+	
+	div.className = root.className;
 
 	return {
 		mount: function ( target, anchor ) {
-			insertNode( h2, target, anchor );
-			insertNode( text1, target, anchor );
 			insertNode( div, target, anchor );
 		},
 		
 		update: function ( changed, root ) {
-			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-				raw_before.parentNode.removeChild( raw_before.nextSibling );
-			}
-			
-			raw_before.insertAdjacentHTML( 'afterend', root.content );
+			div.className = root.className;
 		},
 		
 		teardown: function ( detach ) {
+			div.removeEventListener( 'click', clickHandler, false );
+			
 			if ( detach ) {
-				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-					raw_before.parentNode.removeChild( raw_before.nextSibling );
-				}
-				
-				detachNode( h2 );
-				detachNode( text1 );
 				detachNode( div );
 			}
 		},
 	};
 }
 
-function Provision ( options ) {
+function Dimmer ( options ) {
 	options = options || {};
 	
 	this._state = options.data || {};
@@ -237,16 +161,20 @@ function Provision ( options ) {
 	this._root = options._root;
 	this._yield = options._yield;
 
+	if ( !addedCss$2 ) addCss$2();
+	
 	this._fragment = renderMainFragment$2( this._state, this );
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
-Provision.prototype.get = get;
-Provision.prototype.fire = fire;
-Provision.prototype.observe = observe;
-Provision.prototype.on = on;
+Dimmer.prototype = template$2.methods;
 
-Provision.prototype.set = function set ( newState ) {
+Dimmer.prototype.get = get;
+Dimmer.prototype.fire = fire;
+Dimmer.prototype.observe = observe;
+Dimmer.prototype.on = on;
+
+Dimmer.prototype.set = function set ( newState ) {
 	var oldState = this._state;
 	this._state = Object.assign( {}, oldState, newState );
 	
@@ -255,7 +183,7 @@ Provision.prototype.set = function set ( newState ) {
 	dispatchObservers( this, this._observers.post, newState, oldState );
 };
 
-Provision.prototype.teardown = function teardown ( detach ) {
+Dimmer.prototype.teardown = function teardown ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -264,387 +192,12 @@ Provision.prototype.teardown = function teardown ( detach ) {
 	this._state = {};
 };
 
-function renderMainFragment$3 ( root, component ) {
-	var h2 = createElement( 'h2' );
-	
-	appendNode( createText( "부칙" ), h2 );
-	var text1 = createText( "\n" );
-	
-	var div = createElement( 'div' );
-	
-	var raw_before = createElement( 'noscript' );
-	appendNode( raw_before, div );
-	var raw_after = createElement( 'noscript' );
-	appendNode( raw_after, div );
-	raw_before.insertAdjacentHTML( 'afterend', root.content.meta );
-	var text2 = createText( "\n" );
-	
-	var div1 = createElement( 'div' );
-	
-	var raw1_before = createElement( 'noscript' );
-	appendNode( raw1_before, div1 );
-	var raw1_after = createElement( 'noscript' );
-	appendNode( raw1_after, div1 );
-	raw1_before.insertAdjacentHTML( 'afterend', root.content.body );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( h2, target, anchor );
-			insertNode( text1, target, anchor );
-			insertNode( div, target, anchor );
-			insertNode( text2, target, anchor );
-			insertNode( div1, target, anchor );
-		},
-		
-		update: function ( changed, root ) {
-			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-				raw_before.parentNode.removeChild( raw_before.nextSibling );
-			}
-			
-			raw_before.insertAdjacentHTML( 'afterend', root.content.meta );
-			
-			while ( raw1_before.nextSibling && raw1_before.nextSibling !== raw1_after ) {
-				raw1_before.parentNode.removeChild( raw1_before.nextSibling );
-			}
-			
-			raw1_before.insertAdjacentHTML( 'afterend', root.content.body );
-		},
-		
-		teardown: function ( detach ) {
-			if ( detach ) {
-				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-					raw_before.parentNode.removeChild( raw_before.nextSibling );
-				}
-				
-				while ( raw1_before.nextSibling && raw1_before.nextSibling !== raw1_after ) {
-					raw1_before.parentNode.removeChild( raw1_before.nextSibling );
-				}
-				
-				detachNode( h2 );
-				detachNode( text1 );
-				detachNode( div );
-				detachNode( text2 );
-				detachNode( div1 );
-			}
-		},
-	};
-}
-
-function Addenda ( options ) {
-	options = options || {};
-	
-	this._state = options.data || {};
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._fragment = renderMainFragment$3( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-}
-
-Addenda.prototype.get = get;
-Addenda.prototype.fire = fire;
-Addenda.prototype.observe = observe;
-Addenda.prototype.on = on;
-
-Addenda.prototype.set = function set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-};
-
-Addenda.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-};
-
-var template = (function () {
-  return {
-    components: { Preamble, Provision, Addenda }
-  };
-}());
-
-let addedCss = false;
-function addCss () {
-	var style = createElement( 'style' );
-	style.textContent = "\n  .body[svelte-3199972298], [svelte-3199972298] .body {\n    font-family: 'Nanum Myeongjo';\n    padding: 50px 20px;\n  }\n\n  .body__align[svelte-3199972298], [svelte-3199972298] .body__align {\n    max-width: 960px;\n    margin: 0 auto;\n  }\n\n  @media (min-width: 600px) {\n    .body[svelte-3199972298], [svelte-3199972298] .body {\n      margin-left: 200px;\n    }\n  }\n";
-	appendNode( style, document.head );
-
-	addedCss = true;
-}
-
-function renderMainFragment ( root, component ) {
-	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-3199972298', '' );
-	div.className = "body markdown-body";
-	
-	var div1 = createElement( 'div' );
-	div1.setAttribute( 'svelte-3199972298', '' );
-	div1.className = "body__align";
-	
-	appendNode( div1, div );
-	
-	var h1 = createElement( 'h1' );
-	h1.setAttribute( 'svelte-3199972298', '' );
-	
-	appendNode( h1, div1 );
-	appendNode( createText( "대한민국 헌법" ), h1 );
-	appendNode( createText( "\n    " ), div1 );
-	
-	var div2 = createElement( 'div' );
-	div2.setAttribute( 'svelte-3199972298', '' );
-	
-	appendNode( div2, div1 );
-	var raw_before = createElement( 'noscript' );
-	appendNode( raw_before, div2 );
-	var raw_after = createElement( 'noscript' );
-	appendNode( raw_after, div2 );
-	raw_before.insertAdjacentHTML( 'afterend', root.meta );
-	appendNode( createText( "\n    " ), div1 );
-	
-	var preamble_initialData = {
-		content: root.preamble
-	};
-	var preamble = new template.components.Preamble({
-		target: div1,
-		_root: component._root || component,
-		data: preamble_initialData
-	});
-	
-	appendNode( createText( "\n    " ), div1 );
-	
-	var provision_initialData = {
-		content: root.provision
-	};
-	var provision = new template.components.Provision({
-		target: div1,
-		_root: component._root || component,
-		data: provision_initialData
-	});
-	
-	appendNode( createText( "\n    " ), div1 );
-	
-	var addenda_initialData = {
-		content: root.addenda
-	};
-	var addenda = new template.components.Addenda({
-		target: div1,
-		_root: component._root || component,
-		data: addenda_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( div, target, anchor );
-		},
-		
-		update: function ( changed, root ) {
-			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-				raw_before.parentNode.removeChild( raw_before.nextSibling );
-			}
-			
-			raw_before.insertAdjacentHTML( 'afterend', root.meta );
-			
-			var preamble_changes = {};
-			
-			if ( 'preamble' in changed ) preamble_changes.content = root.preamble;
-			
-			if ( Object.keys( preamble_changes ).length ) preamble.set( preamble_changes );
-			
-			var provision_changes = {};
-			
-			if ( 'provision' in changed ) provision_changes.content = root.provision;
-			
-			if ( Object.keys( provision_changes ).length ) provision.set( provision_changes );
-			
-			var addenda_changes = {};
-			
-			if ( 'addenda' in changed ) addenda_changes.content = root.addenda;
-			
-			if ( Object.keys( addenda_changes ).length ) addenda.set( addenda_changes );
-		},
-		
-		teardown: function ( detach ) {
-			preamble.teardown( false );
-			provision.teardown( false );
-			addenda.teardown( false );
-			
-			if ( detach ) {
-				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
-					raw_before.parentNode.removeChild( raw_before.nextSibling );
-				}
-				
-				detachNode( div );
-			}
-		},
-	};
-}
-
-function Body ( options ) {
-	options = options || {};
-	
-	this._state = options.data || {};
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	if ( !addedCss ) addCss();
-	this._renderHooks = [];
-	
-	this._fragment = renderMainFragment( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-	
-	while ( this._renderHooks.length ) {
-		var hook = this._renderHooks.pop();
-		hook.fn.call( hook.context );
-	}
-}
-
-Body.prototype.get = get;
-Body.prototype.fire = fire;
-Body.prototype.observe = observe;
-Body.prototype.on = on;
-
-Body.prototype.set = function set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-	
-	while ( this._renderHooks.length ) {
-		var hook = this._renderHooks.pop();
-		hook.fn.call( hook.context );
-	}
-};
-
-Body.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-};
-
-var comp = new Body({
-  target: document.querySelector('main'),
+var comp$2 = new Dimmer({
+  target: document.querySelector('.dimmer'),
   data: {
-    addenda: { content: '', meta: '' }
+    className: 'screen'
   }
 });
-
-let addedCss$1 = false;
-function addCss$1 () {
-	var style = createElement( 'style' );
-	style.textContent = "\n  .footer[svelte-600482808], [svelte-600482808] .footer {\n    border-top: 1px solid #eeeeee;\n    padding: 30px 0;\n    text-align: center;\n    color: #777777;\n  }\n\n  @media (min-width: 600px) {\n    .footer[svelte-600482808], [svelte-600482808] .footer {\n      margin-left: 200px;\n    }\n  }\n\n  .footer  a[svelte-600482808], .footer  [svelte-600482808] a, .footer[svelte-600482808]  a, [svelte-600482808] .footer  a {\n    text-decoration: inherit;\n    color: inherit;\n    cursor: auto;\n  }\n\n  .footer  a[svelte-600482808]:hover, .footer  [svelte-600482808] a:hover, .footer[svelte-600482808]  a:hover, [svelte-600482808] .footer  a:hover {\n    color: #333333;\n  }\n";
-	appendNode( style, document.head );
-
-	addedCss$1 = true;
-}
-
-function renderMainFragment$4 ( root, component ) {
-	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-600482808', '' );
-	div.className = "footer";
-	
-	var a = createElement( 'a' );
-	a.setAttribute( 'svelte-600482808', '' );
-	a.href = "mailto:jkiimm9@gmail.com";
-	
-	appendNode( a, div );
-	appendNode( createText( "jkiimm9@gmail.com" ), a );
-	appendNode( createText( " | " ), div );
-	
-	var a1 = createElement( 'a' );
-	a1.setAttribute( 'svelte-600482808', '' );
-	a1.href = "https://github.com/jkiimm/constitution";
-	
-	appendNode( a1, div );
-	appendNode( createText( "소스 보기" ), a1 );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( div, target, anchor );
-		},
-		
-		update: noop,
-		
-		teardown: function ( detach ) {
-			if ( detach ) {
-				detachNode( div );
-			}
-		},
-	};
-}
-
-function Footer ( options ) {
-	options = options || {};
-	
-	this._state = options.data || {};
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	if ( !addedCss$1 ) addCss$1();
-	
-	this._fragment = renderMainFragment$4( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-}
-
-Footer.prototype.get = get;
-Footer.prototype.fire = fire;
-Footer.prototype.observe = observe;
-Footer.prototype.on = on;
-
-Footer.prototype.set = function set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-};
-
-Footer.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-};
-
-var comp$1 = new Footer({ target: document.querySelector('footer') });
 
 var template$1 = (function () {
   return {
@@ -656,34 +209,35 @@ var template$1 = (function () {
             return ver;
           });
 
-        this.set({ versions });
+        this.set({ versions, className: 'sidenav' });
+        comp$2.set({ className: 'screen' });
       }
     }
   };
 }());
 
-let addedCss$2 = false;
-function addCss$2 () {
+let addedCss$1 = false;
+function addCss$1 () {
 	var style = createElement( 'style' );
-	style.textContent = "\n  .sidenav[svelte-1972918911], [svelte-1972918911] .sidenav {\n    position: fixed;\n    float: left;\n    border-right: 1px solid #cccccc;\n    color: #333333;\n    width: 200px;\n    height: 100%;\n    overflow: auto;\n    transform: translate(-100%, 0);\n    background: #ffffff;\n  }\n\n  @media (min-width: 600px) {\n    .sidenav[svelte-1972918911], [svelte-1972918911] .sidenav {\n      transform: translate(0, 0);\n    }\n  }\n\n  .sidenav__logo[svelte-1972918911], [svelte-1972918911] .sidenav__logo {\n    text-align: center;\n    padding: 30px 0;\n  }\n\n  img[svelte-1972918911], [svelte-1972918911] img {\n    width: 100px;\n    height: 100px;\n  }\n\n  ol[svelte-1972918911], [svelte-1972918911] ol {\n    margin: 0;\n    padding: 0;\n    font-size: 18px;\n    list-style-type: none;\n    text-align: center;\n  }\n\n  .sidenav__sub[svelte-1972918911], [svelte-1972918911] .sidenav__sub {\n    margin: 0;\n    padding: 10px 0 10px 18px;\n    font-size: 20px;\n    background: #666666;\n    color: #ffffff;\n  }\n\n  a[svelte-1972918911], [svelte-1972918911] a {\n    display: block;\n    padding: 10px 30px;\n    color: inherit;\n    text-decoration: none;\n  }\n\n  li[svelte-1972918911], [svelte-1972918911] li {\n  }\n\n  li[svelte-1972918911]:hover, [svelte-1972918911] li:hover, .selected[svelte-1972918911], [svelte-1972918911] .selected {\n    background: #e4e4e4;\n  }\n";
+	style.textContent = "\n  .sidenav[svelte-70410435], [svelte-70410435] .sidenav {\n    position: fixed;\n    float: left;\n    border-right: 1px solid #cccccc;\n    color: #333333;\n    width: 200px;\n    height: 100%;\n    overflow: auto;\n    transform: translate(-100%, 0);\n    background: #ffffff;\n    transition: transform 0.4s;\n    will-change: transform;\n    z-index: 10;\n  }\n\n  .sidenav--opened[svelte-70410435], [svelte-70410435] .sidenav--opened {\n    transform: translate(0, 0);\n  }\n\n  @media (min-width: 600px) {\n    .sidenav[svelte-70410435], [svelte-70410435] .sidenav {\n      transform: translate(0, 0);\n    }\n  }\n\n  .sidenav__logo[svelte-70410435], [svelte-70410435] .sidenav__logo {\n    text-align: center;\n    padding: 30px 0;\n  }\n\n  img[svelte-70410435], [svelte-70410435] img {\n    width: 100px;\n    height: 100px;\n  }\n\n  ol[svelte-70410435], [svelte-70410435] ol {\n    margin: 0;\n    padding: 0;\n    font-size: 18px;\n    list-style-type: none;\n    text-align: center;\n  }\n\n  .sidenav__sub[svelte-70410435], [svelte-70410435] .sidenav__sub {\n    margin: 0;\n    padding: 10px 0 10px 18px;\n    font-size: 20px;\n    background: #666666;\n    color: #ffffff;\n  }\n\n  a[svelte-70410435], [svelte-70410435] a {\n    display: block;\n    padding: 10px 30px;\n    color: inherit;\n    text-decoration: none;\n  }\n\n  li[svelte-70410435], [svelte-70410435] li {\n  }\n\n  li[svelte-70410435]:hover, [svelte-70410435] li:hover, .selected[svelte-70410435], [svelte-70410435] .selected {\n    background: #e4e4e4;\n  }\n";
 	appendNode( style, document.head );
 
-	addedCss$2 = true;
+	addedCss$1 = true;
 }
 
-function renderMainFragment$5 ( root, component ) {
+function renderMainFragment$1 ( root, component ) {
 	var div = createElement( 'div' );
-	div.setAttribute( 'svelte-1972918911', '' );
-	div.className = "sidenav";
+	div.setAttribute( 'svelte-70410435', '' );
+	div.className = root.className;
 	
 	var div1 = createElement( 'div' );
-	div1.setAttribute( 'svelte-1972918911', '' );
+	div1.setAttribute( 'svelte-70410435', '' );
 	div1.className = "sidenav__logo";
 	
 	appendNode( div1, div );
 	
 	var img = createElement( 'img' );
-	img.setAttribute( 'svelte-1972918911', '' );
+	img.setAttribute( 'svelte-70410435', '' );
 	img.src = "assets/images/emblem.svg";
 	img.alt = "헌법제판소 엠블럼";
 	
@@ -691,12 +245,12 @@ function renderMainFragment$5 ( root, component ) {
 	appendNode( createText( "\n  " ), div );
 	
 	var div2 = createElement( 'div' );
-	div2.setAttribute( 'svelte-1972918911', '' );
+	div2.setAttribute( 'svelte-70410435', '' );
 	
 	appendNode( div2, div );
 	
 	var h2 = createElement( 'h2' );
-	h2.setAttribute( 'svelte-1972918911', '' );
+	h2.setAttribute( 'svelte-70410435', '' );
 	h2.className = "sidenav__sub";
 	
 	appendNode( h2, div2 );
@@ -704,7 +258,7 @@ function renderMainFragment$5 ( root, component ) {
 	appendNode( createText( "\n    " ), div2 );
 	
 	var ol = createElement( 'ol' );
-	ol.setAttribute( 'svelte-1972918911', '' );
+	ol.setAttribute( 'svelte-70410435', '' );
 	
 	appendNode( ol, div2 );
 	var eachBlock_anchor = createComment( "#each versions" );
@@ -723,6 +277,8 @@ function renderMainFragment$5 ( root, component ) {
 		},
 		
 		update: function ( changed, root ) {
+			div.className = root.className;
+			
 			var eachBlock_value = root.versions;
 			
 			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
@@ -755,11 +311,11 @@ function renderMainFragment$5 ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, version, version__index, component ) {
 	var li = createElement( 'li' );
-	li.setAttribute( 'svelte-1972918911', '' );
+	li.setAttribute( 'svelte-70410435', '' );
 	li.className = version.selected ? 'selected': '';
 	
 	var a = createElement( 'a' );
-	a.setAttribute( 'svelte-1972918911', '' );
+	a.setAttribute( 'svelte-70410435', '' );
 	a.href = "#/articles/" + ( version.num );
 	
 	function clickHandler ( event ) {
@@ -822,9 +378,9 @@ function Sidenav ( options ) {
 	this._root = options._root;
 	this._yield = options._yield;
 
-	if ( !addedCss$2 ) addCss$2();
+	if ( !addedCss$1 ) addCss$1();
 	
-	this._fragment = renderMainFragment$5( this._state, this );
+	this._fragment = renderMainFragment$1( this._state, this );
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
@@ -10885,9 +10441,10 @@ var index = {
   zipWith: zipWith
 };
 
-var comp$3 = new Sidenav({
+var comp$1 = new Sidenav({
   target: document.querySelector('nav'),
   data: {
+    className: 'sidenav',
     versions: index.range(1, 11).reverse().map(function (n) {
       return {
         num: n,
@@ -10897,6 +10454,711 @@ var comp$3 = new Sidenav({
     })
   }
 });
+
+var template = (function () {
+  return {
+    methods: {
+      openSidenav() {
+        comp$1.set({ className: 'sidenav sidenav--opened' });
+        comp$2.set({ className: 'screen screen--active' });
+      }
+    }
+  };
+}());
+
+let addedCss = false;
+function addCss () {
+	var style = createElement( 'style' );
+	style.textContent = "\n  .icon[svelte-318233794], [svelte-318233794] .icon, h1[svelte-318233794], [svelte-318233794] h1 {\n    vertical-align: middle;\n  }\n\n  .icon[svelte-318233794], [svelte-318233794] .icon {\n    font-style: normal;\n    display: inline-block;\n    padding: 8px;\n    cursor: pointer;\n    transform: scale(1.2, 1);\n  }\n\n  .toolbar[svelte-318233794], [svelte-318233794] .toolbar {\n    display: table;\n    position: fixed;\n    width: 100%;\n    height: 45px;\n    background: #f6f6f6;\n    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 0px 2px 2px rgba(0, 0, 0, 0.098), 0px 0px 5px 1px rgba(0, 0, 0, 0.084);\n    color: #333333;\n  }\n\n  .toolbar__inner[svelte-318233794], [svelte-318233794] .toolbar__inner {\n    display: table-cell;\n    vertical-align: middle;\n  }\n\n  .toolbar__content[svelte-318233794], [svelte-318233794] .toolbar__content {\n    margin: 0 5px;\n  }\n\n  h1[svelte-318233794], [svelte-318233794] h1 {\n    display: inline-block;\n    font-size: 18px;\n    margin: 0 0 0 3px;\n    line-height: 45px;\n  }\n\n  @media (min-width: 600px) {\n    .toolbar[svelte-318233794], [svelte-318233794] .toolbar {\n      display: none;\n    }\n  }\n";
+	appendNode( style, document.head );
+
+	addedCss = true;
+}
+
+function renderMainFragment ( root, component ) {
+	var div = createElement( 'div' );
+	div.setAttribute( 'svelte-318233794', '' );
+	div.className = "toolbar";
+	
+	var div1 = createElement( 'div' );
+	div1.setAttribute( 'svelte-318233794', '' );
+	div1.className = "toolbar__inner";
+	
+	appendNode( div1, div );
+	
+	var div2 = createElement( 'div' );
+	div2.setAttribute( 'svelte-318233794', '' );
+	div2.className = "toolbar__content";
+	
+	appendNode( div2, div1 );
+	
+	var i = createElement( 'i' );
+	i.setAttribute( 'svelte-318233794', '' );
+	i.className = "icon";
+	
+	function clickHandler ( event ) {
+		component.openSidenav();
+	}
+	
+	i.addEventListener( 'click', clickHandler, false );
+	
+	appendNode( i, div2 );
+	appendNode( createText( "☰" ), i );
+	
+	var h1 = createElement( 'h1' );
+	h1.setAttribute( 'svelte-318233794', '' );
+	
+	appendNode( h1, div2 );
+	var text1 = createText( root.heading );
+	appendNode( text1, h1 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			text1.data = root.heading;
+		},
+		
+		teardown: function ( detach ) {
+			i.removeEventListener( 'click', clickHandler, false );
+			
+			if ( detach ) {
+				detachNode( div );
+			}
+		},
+	};
+}
+
+function Toolbar ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	if ( !addedCss ) addCss();
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+Toolbar.prototype = template.methods;
+
+Toolbar.prototype.get = get;
+Toolbar.prototype.fire = fire;
+Toolbar.prototype.observe = observe;
+Toolbar.prototype.on = on;
+
+Toolbar.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Toolbar.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+var comp = new Toolbar({
+  target: document.querySelector('header'),
+  data: {
+    heading: ''
+  }
+});
+
+function renderMainFragment$4 ( root, component ) {
+	var h2 = createElement( 'h2' );
+	
+	appendNode( createText( "전문" ), h2 );
+	var text1 = createText( "\n" );
+	
+	var div = createElement( 'div' );
+	
+	var raw_before = createElement( 'noscript' );
+	appendNode( raw_before, div );
+	var raw_after = createElement( 'noscript' );
+	appendNode( raw_after, div );
+	raw_before.insertAdjacentHTML( 'afterend', root.content );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( h2, target, anchor );
+			insertNode( text1, target, anchor );
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+				raw_before.parentNode.removeChild( raw_before.nextSibling );
+			}
+			
+			raw_before.insertAdjacentHTML( 'afterend', root.content );
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+					raw_before.parentNode.removeChild( raw_before.nextSibling );
+				}
+				
+				detachNode( h2 );
+				detachNode( text1 );
+				detachNode( div );
+			}
+		},
+	};
+}
+
+function Preamble ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._fragment = renderMainFragment$4( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+Preamble.prototype.get = get;
+Preamble.prototype.fire = fire;
+Preamble.prototype.observe = observe;
+Preamble.prototype.on = on;
+
+Preamble.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Preamble.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+function renderMainFragment$5 ( root, component ) {
+	var h2 = createElement( 'h2' );
+	
+	appendNode( createText( "조문" ), h2 );
+	var text1 = createText( "\n" );
+	
+	var div = createElement( 'div' );
+	
+	var raw_before = createElement( 'noscript' );
+	appendNode( raw_before, div );
+	var raw_after = createElement( 'noscript' );
+	appendNode( raw_after, div );
+	raw_before.insertAdjacentHTML( 'afterend', root.content );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( h2, target, anchor );
+			insertNode( text1, target, anchor );
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+				raw_before.parentNode.removeChild( raw_before.nextSibling );
+			}
+			
+			raw_before.insertAdjacentHTML( 'afterend', root.content );
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+					raw_before.parentNode.removeChild( raw_before.nextSibling );
+				}
+				
+				detachNode( h2 );
+				detachNode( text1 );
+				detachNode( div );
+			}
+		},
+	};
+}
+
+function Provision ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._fragment = renderMainFragment$5( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+Provision.prototype.get = get;
+Provision.prototype.fire = fire;
+Provision.prototype.observe = observe;
+Provision.prototype.on = on;
+
+Provision.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Provision.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+function renderMainFragment$6 ( root, component ) {
+	var h2 = createElement( 'h2' );
+	
+	appendNode( createText( "부칙" ), h2 );
+	var text1 = createText( "\n" );
+	
+	var div = createElement( 'div' );
+	
+	var raw_before = createElement( 'noscript' );
+	appendNode( raw_before, div );
+	var raw_after = createElement( 'noscript' );
+	appendNode( raw_after, div );
+	raw_before.insertAdjacentHTML( 'afterend', root.content.meta );
+	var text2 = createText( "\n" );
+	
+	var div1 = createElement( 'div' );
+	
+	var raw1_before = createElement( 'noscript' );
+	appendNode( raw1_before, div1 );
+	var raw1_after = createElement( 'noscript' );
+	appendNode( raw1_after, div1 );
+	raw1_before.insertAdjacentHTML( 'afterend', root.content.body );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( h2, target, anchor );
+			insertNode( text1, target, anchor );
+			insertNode( div, target, anchor );
+			insertNode( text2, target, anchor );
+			insertNode( div1, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+				raw_before.parentNode.removeChild( raw_before.nextSibling );
+			}
+			
+			raw_before.insertAdjacentHTML( 'afterend', root.content.meta );
+			
+			while ( raw1_before.nextSibling && raw1_before.nextSibling !== raw1_after ) {
+				raw1_before.parentNode.removeChild( raw1_before.nextSibling );
+			}
+			
+			raw1_before.insertAdjacentHTML( 'afterend', root.content.body );
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+					raw_before.parentNode.removeChild( raw_before.nextSibling );
+				}
+				
+				while ( raw1_before.nextSibling && raw1_before.nextSibling !== raw1_after ) {
+					raw1_before.parentNode.removeChild( raw1_before.nextSibling );
+				}
+				
+				detachNode( h2 );
+				detachNode( text1 );
+				detachNode( div );
+				detachNode( text2 );
+				detachNode( div1 );
+			}
+		},
+	};
+}
+
+function Addenda ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._fragment = renderMainFragment$6( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+Addenda.prototype.get = get;
+Addenda.prototype.fire = fire;
+Addenda.prototype.observe = observe;
+Addenda.prototype.on = on;
+
+Addenda.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Addenda.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+var template$3 = (function () {
+  return {
+    components: { Preamble, Provision, Addenda }
+  };
+}());
+
+let addedCss$3 = false;
+function addCss$3 () {
+	var style = createElement( 'style' );
+	style.textContent = "\n  .body[svelte-3506797658], [svelte-3506797658] .body {\n    font-family: 'Nanum Myeongjo';\n    padding: 50px 20px;\n  }\n\n  .body__align[svelte-3506797658], [svelte-3506797658] .body__align {\n    max-width: 960px;\n    margin: 0 auto;\n  }\n\n  .body__inner--loading  .spinner[svelte-3506797658], .body__inner--loading  [svelte-3506797658] .spinner, .body__inner--loading[svelte-3506797658]  .spinner, [svelte-3506797658] .body__inner--loading  .spinner {\n    display: block;\n    text-align: center;\n    margin: 200px 0;\n  }\n\n  .body__inner--loading  .body__align[svelte-3506797658], .body__inner--loading  [svelte-3506797658] .body__align, .body__inner--loading[svelte-3506797658]  .body__align, [svelte-3506797658] .body__inner--loading  .body__align {\n    display: none;\n  }\n\n  .spinner[svelte-3506797658], [svelte-3506797658] .spinner {\n    display: none;\n    margin: 0 auto;\n  }\n\n  @media (min-width: 600px) {\n    .body[svelte-3506797658], [svelte-3506797658] .body {\n      margin-left: 200px;\n    }\n  }\n";
+	appendNode( style, document.head );
+
+	addedCss$3 = true;
+}
+
+function renderMainFragment$3 ( root, component ) {
+	var div = createElement( 'div' );
+	div.setAttribute( 'svelte-3506797658', '' );
+	div.className = "body markdown-body";
+	
+	var div1 = createElement( 'div' );
+	div1.setAttribute( 'svelte-3506797658', '' );
+	div1.className = root.innerClass;
+	
+	appendNode( div1, div );
+	
+	var div2 = createElement( 'div' );
+	div2.setAttribute( 'svelte-3506797658', '' );
+	div2.className = "spinner";
+	
+	appendNode( div2, div1 );
+	
+	var img = createElement( 'img' );
+	img.setAttribute( 'svelte-3506797658', '' );
+	img.className = "spinner__img";
+	img.src = "assets/images/loading.svg";
+	img.alt = "내용 불러오는 중";
+	
+	appendNode( img, div2 );
+	appendNode( createText( "\n\n    " ), div1 );
+	
+	var div3 = createElement( 'div' );
+	div3.setAttribute( 'svelte-3506797658', '' );
+	div3.className = "body__align";
+	
+	appendNode( div3, div1 );
+	
+	var h1 = createElement( 'h1' );
+	h1.setAttribute( 'svelte-3506797658', '' );
+	
+	appendNode( h1, div3 );
+	appendNode( createText( "대한민국 헌법" ), h1 );
+	appendNode( createText( "\n      " ), div3 );
+	
+	var div4 = createElement( 'div' );
+	div4.setAttribute( 'svelte-3506797658', '' );
+	
+	appendNode( div4, div3 );
+	var raw_before = createElement( 'noscript' );
+	appendNode( raw_before, div4 );
+	var raw_after = createElement( 'noscript' );
+	appendNode( raw_after, div4 );
+	raw_before.insertAdjacentHTML( 'afterend', root.meta );
+	appendNode( createText( "\n      " ), div3 );
+	
+	var preamble_initialData = {
+		content: root.preamble
+	};
+	var preamble = new template$3.components.Preamble({
+		target: div3,
+		_root: component._root || component,
+		data: preamble_initialData
+	});
+	
+	appendNode( createText( "\n      " ), div3 );
+	
+	var provision_initialData = {
+		content: root.provision
+	};
+	var provision = new template$3.components.Provision({
+		target: div3,
+		_root: component._root || component,
+		data: provision_initialData
+	});
+	
+	appendNode( createText( "\n      " ), div3 );
+	
+	var addenda_initialData = {
+		content: root.addenda
+	};
+	var addenda = new template$3.components.Addenda({
+		target: div3,
+		_root: component._root || component,
+		data: addenda_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			div1.className = root.innerClass;
+			
+			while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+				raw_before.parentNode.removeChild( raw_before.nextSibling );
+			}
+			
+			raw_before.insertAdjacentHTML( 'afterend', root.meta );
+			
+			var preamble_changes = {};
+			
+			if ( 'preamble' in changed ) preamble_changes.content = root.preamble;
+			
+			if ( Object.keys( preamble_changes ).length ) preamble.set( preamble_changes );
+			
+			var provision_changes = {};
+			
+			if ( 'provision' in changed ) provision_changes.content = root.provision;
+			
+			if ( Object.keys( provision_changes ).length ) provision.set( provision_changes );
+			
+			var addenda_changes = {};
+			
+			if ( 'addenda' in changed ) addenda_changes.content = root.addenda;
+			
+			if ( Object.keys( addenda_changes ).length ) addenda.set( addenda_changes );
+		},
+		
+		teardown: function ( detach ) {
+			preamble.teardown( false );
+			provision.teardown( false );
+			addenda.teardown( false );
+			
+			if ( detach ) {
+				while ( raw_before.nextSibling && raw_before.nextSibling !== raw_after ) {
+					raw_before.parentNode.removeChild( raw_before.nextSibling );
+				}
+				
+				detachNode( div );
+			}
+		},
+	};
+}
+
+function Body ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	if ( !addedCss$3 ) addCss$3();
+	this._renderHooks = [];
+	
+	this._fragment = renderMainFragment$3( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+	
+	while ( this._renderHooks.length ) {
+		var hook = this._renderHooks.pop();
+		hook.fn.call( hook.context );
+	}
+}
+
+Body.prototype.get = get;
+Body.prototype.fire = fire;
+Body.prototype.observe = observe;
+Body.prototype.on = on;
+
+Body.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+	
+	while ( this._renderHooks.length ) {
+		var hook = this._renderHooks.pop();
+		hook.fn.call( hook.context );
+	}
+};
+
+Body.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+var comp$3 = new Body({
+  target: document.querySelector('main'),
+  data: {
+    addenda: { content: '', meta: '' },
+    innerClass: 'body__inner'
+  }
+});
+
+let addedCss$4 = false;
+function addCss$4 () {
+	var style = createElement( 'style' );
+	style.textContent = "\n  .footer[svelte-600482808], [svelte-600482808] .footer {\n    border-top: 1px solid #eeeeee;\n    padding: 30px 0;\n    text-align: center;\n    color: #777777;\n  }\n\n  @media (min-width: 600px) {\n    .footer[svelte-600482808], [svelte-600482808] .footer {\n      margin-left: 200px;\n    }\n  }\n\n  .footer  a[svelte-600482808], .footer  [svelte-600482808] a, .footer[svelte-600482808]  a, [svelte-600482808] .footer  a {\n    text-decoration: inherit;\n    color: inherit;\n    cursor: auto;\n  }\n\n  .footer  a[svelte-600482808]:hover, .footer  [svelte-600482808] a:hover, .footer[svelte-600482808]  a:hover, [svelte-600482808] .footer  a:hover {\n    color: #333333;\n  }\n";
+	appendNode( style, document.head );
+
+	addedCss$4 = true;
+}
+
+function renderMainFragment$7 ( root, component ) {
+	var div = createElement( 'div' );
+	div.setAttribute( 'svelte-600482808', '' );
+	div.className = "footer";
+	
+	var a = createElement( 'a' );
+	a.setAttribute( 'svelte-600482808', '' );
+	a.href = "mailto:jkiimm9@gmail.com";
+	
+	appendNode( a, div );
+	appendNode( createText( "jkiimm9@gmail.com" ), a );
+	appendNode( createText( " | " ), div );
+	
+	var a1 = createElement( 'a' );
+	a1.setAttribute( 'svelte-600482808', '' );
+	a1.href = "https://github.com/jkiimm/constitution";
+	
+	appendNode( a1, div );
+	appendNode( createText( "소스 보기" ), a1 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: noop,
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( div );
+			}
+		},
+	};
+}
+
+function Footer ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	if ( !addedCss$4 ) addCss$4();
+	
+	this._fragment = renderMainFragment$7( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+Footer.prototype.get = get;
+Footer.prototype.fire = fire;
+Footer.prototype.observe = observe;
+Footer.prototype.on = on;
+
+Footer.prototype.set = function set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Footer.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+};
+
+var comp$4 = new Footer({ target: document.querySelector('footer') });
 
 const PARAMETER_REGEXP = /([:*])(\w+)/g;
 const WILDCARD_REGEXP = /\*/g;
@@ -21455,37 +21717,40 @@ var index$5 = yaml;
 const router = new Navigo(null, true);
 
 router.on('/articles/:ver', (params) => {
-  setContent(`0${params.ver}`.slice(-2));
+  setContent(params.ver);
 })
 .resolve();
 
 function setContent(ver) {
+  const verStr = `0${ver}`.slice(-2);
   let meta = {};
+  let content = {};
 
-  client.get(`assets/data/${ver}/preamble.md`)
-    .then((res) => {
-      comp.set({ preamble: markdown.toHTML(res.text) });
-    });
+  comp.set({ heading: `헌법 제${ver}호` });
+  comp$3.set({ innerClass: 'body__inner body__inner--loading' });
 
-  client.get(`assets/data/${ver}/provision.md`)
-    .then((res) => {
-      comp.set({ provision: markdown.toHTML(res.text) });
-    });
+  Promise.all([
+    client.get(`assets/data/${verStr}/preamble.md`),
+    client.get(`assets/data/${verStr}/provision.md`),
+    client.get(`assets/data/${verStr}/meta.yaml`),
+  ])
+    .then((ress) => {
+      content.preamble = markdown.toHTML(ress[0].text);
+      content.provision = markdown.toHTML(ress[1].text);
 
-  client.get(`assets/data/${ver}/meta.yaml`)
-    .then((res) => {
-      meta = index$5.load(res.text);
-      comp.set({ meta: markdown.toHTML(meta.general) });
+      meta = index$5.load(ress[2].text);
+      content.meta = markdown.toHTML(meta.general);
 
-      return client.get(`assets/data/${ver}/addenda.md`);
+      return client.get(`assets/data/${verStr}/addenda.md`);
     })
     .then((res) => {
-      comp.set({
-        addenda: {
-          body: markdown.toHTML(res.text),
-          meta: markdown.toHTML(meta.addenda)
-        }
-      });
+      content.addenda = {
+        body: markdown.toHTML(res.text),
+        meta: markdown.toHTML(meta.addenda)
+      };
+      content.innerClass = 'body__inner';
+
+      comp$3.set(content);
     });
 }
 
